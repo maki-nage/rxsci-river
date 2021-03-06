@@ -1,22 +1,22 @@
 import rx
 
-def compute_metric(metric):
-    """Computes a mtric on predicted values
+def preprocess(processor):
+    """Pre-processes data
 
     Source:
-        An observable emitting Prediction items.
+        An observable emitting Utterance items.
 
     Args:
-        metric: A river metric
+        processor: A river preprocessor
 
     Returns:
-        An Observable emitting the metric results for each input prediction.
+        An Observable emitting preprocessed items for each input item.
     """
-
-    def _metric(source):
+    def _preprocess(source):
         def on_subscribe(observer, scheduler):
             def on_next(i):
-                result = metric.update(i.utterance.label, i.prediction)
+                processor.learn_one(i.data)
+                result = processor.transform_one(i.data)
                 observer.on_next(result)
 
             return source.subscribe(
@@ -28,4 +28,4 @@ def compute_metric(metric):
 
         return rx.create(on_subscribe)
 
-    return _metric
+    return _preprocess

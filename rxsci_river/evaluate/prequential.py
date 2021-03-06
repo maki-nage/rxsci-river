@@ -21,7 +21,6 @@ def prequential(model, pretrain_size=200):
         An Observable emitting Prediction items for each input item. The
         firsts pretrain_size items do not emit predictions.
     """
-
     def _prequential(source):
         def on_subscribe(observer, scheduler):
             pretrain = pretrain_size
