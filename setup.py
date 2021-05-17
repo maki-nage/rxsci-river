@@ -16,7 +16,7 @@ except IOError:
 
 python_requires = '>=3.6'
 install_requires = [
-    'river>=0.6',
+    'river>=0.7',
     'rxsci>=0.7',
 ]
 

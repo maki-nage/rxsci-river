@@ -1,2 +1,2 @@
-river>=0.6
+river>=0.7
 rxsci>=0.7
