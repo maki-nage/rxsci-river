@@ -23,14 +23,20 @@ Evaluate and train a Hoeffding Tree Classifier from a stream of events:
 
 .. code:: Python
 
-    import rxsci_river as rsm
-    from river.data import SEAGenerator
-    from river.trees import HoeffdingTreeClassifier
+    import rx
+    import rxsci_river as rsr
+    from river import synth
+    from river.tree import HoeffdingTreeClassifier
 
-    rsm.from_stream(SEAGenerator(random_state=1), count=200).pipe(
-        rsm.evaluate.prequential(
-            model=HoeffdingTreeClassifier(),
-            pretrain_size=0),
+    gen = synth.Agrawal(classification_function=0, seed=42)
+    rx.from_(gen.take(1000)).pipe(
+        rsr.evaluate.prequential(
+            model=HoeffdingTreeClassifier(
+                grace_period=100,
+                split_confidence=1e-5,
+                nominal_attributes=['elevel', 'car', 'zipcode'],
+            ),
+            pretrain_size=100),
     ).subscribe(
         on_next=print,
     )
