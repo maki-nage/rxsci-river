@@ -18,6 +18,7 @@ python_requires = '>=3.6'
 install_requires = [
     'river>=0.7',
     'rxsci>=0.7',
+    'scikit-learn>=0.24',
 ]
 
 setup(
