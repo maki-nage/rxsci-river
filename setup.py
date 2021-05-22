@@ -23,7 +23,7 @@ install_requires = [
 
 setup(
     name="rxsci-river",
-    version='0.0.0',
+    version='0.1.0',
     url='https://github.com/maki-nage/rxsci-river.git',
     license='MIT',
     description="River-Ml integration into RxSci",
