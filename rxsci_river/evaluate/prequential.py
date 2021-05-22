@@ -1,4 +1,5 @@
 import rx
+import rxsci_river as rsr
 from river import base
 
 
@@ -20,31 +21,26 @@ def prequential(model, pretrain_size=200):
         An Observable emitting prediction items for each input item. The
         firsts pretrain_size items do not emit predictions.
     """
+    learn_dict = False
     if isinstance(model, base.Classifier):
        predict = model.predict_one
     elif isinstance(model, base.AnomalyDetector):
         predict = model.score_one 
+        learn_dict = True
     else:
         raise NotImplementedError("prequential not implemented for model {}, contributions are welcome!".format(type(model)))
 
     def _learn_one(i):
-        if type(i) is tuple:
-            model.learn_one(i[0], i[1])
-        elif type(i) is dict:
-            if 'y' in i:
-                model.learn_one({'x': i['x'], 'y': i['y']})
-            else:
-                model.learn_one({'x': i['x']})
+        if learn_dict is False:
+            model.learn_one(i.data, i.label)
         else:
-            model.learn_one({'x': i})
+            model.learn_one({'x': i.data})
 
     def _predict(i):
-        if type(i) is tuple:
-            return predict(i[0])
-        elif type(i) is dict:
-            return predict({'x': i['x']})
+        if learn_dict is False:
+            return predict(i.data)
         else:
-            return predict({'x': i})
+            return predict({'x': i.data})
 
     def _prequential(source):
         def on_subscribe(observer, scheduler):
@@ -58,7 +54,7 @@ def prequential(model, pretrain_size=200):
                 else:
                     predict = _predict(i)
                     _learn_one(i)
-                    observer.on_next(predict)
+                    observer.on_next(rsr.Prediction(utterance=i, prediction=predict))
 
             return source.subscribe(
                 on_next=on_next,
