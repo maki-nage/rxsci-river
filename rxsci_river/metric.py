@@ -1,7 +1,7 @@
 import rx
 
 def compute_metric(metric):
-    """Computes a mtric on predicted values
+    """Computes a metric on predicted values
 
     Source:
         An observable emitting Prediction items.
